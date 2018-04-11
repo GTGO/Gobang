@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Hanren</title>
+</head>
+<body>
+	<center><h1>Gobang</h1></center>
+	<center><label id="next"></label></center>
+	<center><canvas id="canvas" width="400" height="400"></canvas></center>
+	
+	<script src="https://code.jquery.com/jquery-2.1.0.js"></script>
+	<script type="text/javascript">
+		var transfer=0;
+		var winFlag=0;
+	/*	var writemessage=function()
+			{
+				if(transfer)
+				{
+					console.log("It's black's order");
+				}
+				else
+				{
+					console.log("It's white's order");
+				}
+			};*/
+			var matrix = [
+			[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+			];
+			var canv = document.getElementById("canvas");
+			var ctx = canv.getContext("2d");
+
+			var next = document.getElementById("next");
+			next.innerHTML="Welcome!";
+
+			ctx.beginPath();
+			for(var i=0;i<19;i++)
+			{
+				ctx.moveTo(10+i*20,10);
+				ctx.lineTo(10+i*20,370);
+				ctx.moveTo(10,10+i*20);
+				ctx.lineTo(370,10+i*20);
+			}
+			ctx.stroke();
+			$("#canvas").click(function(event)
+			{
+				console.log(event.offsetX);
+			//ctx.beginPath();
+			//ctx.arc(event.offsetX,event.offsetY,10,0,Math.PI*2,false);
+			//ctx.fill();
+			var arcPosX,arcPosY;
+			var mtxPosX,mtxPosY;
+			//writemessage();
+			for(var x=0;x<19;x++)
+			{
+				if((Math.abs(event.offsetX-(10+x*20)))<10)
+				{
+					arcPosX = 10+x*20;
+					mtxPosX=x;
+				}
+				if((Math.abs(event.offsetY-(10+x*20)))<10)
+				{
+					arcPosY = 10+x*20;
+					mtxPosY=x;
+				}
+			}
+			if(matrix[mtxPosX][mtxPosY]==0)
+			{
+				ctx.beginPath();
+				transfer=!transfer;
+				if(transfer)
+				{
+					next.innerHTML="It's white's turn!";
+					ctx.fillStyle="Black";
+					ctx.arc(arcPosX,arcPosY,10,0,Math.PI*2,false); 
+					matrix[mtxPosX][mtxPosY]=1;
+				}
+				else
+				{
+					next.innerHTML="It's black's turn!";
+					ctx.fillStyle="White";
+					ctx.arc(arcPosX,arcPosY,10,0,Math.PI*2,false);  
+					ctx.stroke();
+					matrix[mtxPosX][mtxPosY]=2;
+				}
+				ctx.fill();
+				//规则函数
+			winFlag=0;
+			//横向
+			if(winFlag==0)
+			{
+				for(var a=1;a<5;a++)
+				{
+					if(matrix[mtxPosX-a][mtxPosY]==matrix[mtxPosX][mtxPosY])
+					{
+						//console.log(a);
+						if(a==4)
+						{
+							winFlag=1;
+						}
+						else
+						{
+							continue;
+						}
+					}		
+					else
+					{
+						//console.log(a+"N");
+						for(var b=0;b<(5-a);b++)
+						{
+							if(matrix[mtxPosX+b+1][mtxPosY]!=matrix[mtxPosX][mtxPosY])
+							{
+								winFlag=0;
+								break;
+							}
+							else
+							{
+								winFlag=1;
+							}
+						}
+						break;
+					}
+				}
+			}
+			//纵向
+			if(winFlag==0)
+			{
+				for(var a=1;a<5;a++)
+				{
+					if(matrix[mtxPosX][mtxPosY-a]==matrix[mtxPosX][mtxPosY])
+					{
+						//console.log(a);
+						if(a==4)
+						{
+							winFlag=1;
+						}
+						else
+						{
+							continue;
+						}
+					}	
+					else
+					{
+						//console.log(a+"N");
+						for(var b=0;b<(5-a);b++)
+						{
+							if(matrix[mtxPosX][mtxPosY+b+1]!=matrix[mtxPosX][mtxPosY])
+							{
+								winFlag=0;
+								break;
+							}
+							else
+							{
+								winFlag=1;
+							}
+						}
+						break;
+					}
+				}
+			}
+			//正斜
+			if(winFlag==0)
+			{
+				for(var a=1;a<5;a++)
+				{
+					if(matrix[mtxPosX-a][mtxPosY-a]==matrix[mtxPosX][mtxPosY])
+					{
+						//console.log(a);
+						if(a==4)
+						{
+							winFlag=1;
+						}
+						else
+						{
+							continue;
+						}
+					}	
+					else
+					{
+						//console.log(a+"N");
+						for(var b=0;b<(5-a);b++)
+						{
+							if(matrix[mtxPosX+b+1][mtxPosY+b+1]!=matrix[mtxPosX][mtxPosY])
+							{
+								winFlag=0;
+								break;
+							}
+							else
+							{
+								winFlag=1;
+							}
+						}
+						break;
+					}
+				}
+			}
+			//反斜
+			if(winFlag==0)
+			{
+				for(var a=1;a<5;a++)
+				{
+					if(matrix[mtxPosX-a][mtxPosY+a]==matrix[mtxPosX][mtxPosY])
+					{
+						//console.log(a);
+						if(a==4)
+						{
+							winFlag=1;
+						}
+						else
+						{
+							continue;
+						}
+					}	
+					else
+					{
+						//console.log(a+"N");
+						for(var b=0;b<(5-a);b++)
+						{
+							if(matrix[mtxPosX+b+1][mtxPosY-b-1]!=matrix[mtxPosX][mtxPosY])
+							{
+								winFlag=0;
+								break;
+							}
+							else
+							{
+								winFlag=1;
+							}
+						}
+						break;
+					}
+				}
+			}
+			}	
+			
+			
+			if(winFlag==1)
+			{
+				if(transfer)
+				{
+					next.innerHTML="blackwin!";
+					alert("End");
+				}
+				else
+				{
+					next.innerHTML="whitewin!";
+					alert("End");
+				}
+			}
+		});
+
+
+	</script>
+</body>
+</html>
